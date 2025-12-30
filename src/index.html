@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Controller - Full Screen</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Full screen setup */
+        body, html {
+            height: 100%;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+
+        .controller-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .control-card {
+            width: 100%;
+            max-width: 600px; /* Limits width on desktop, full width on mobile */
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .form-label {
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        /* Large inputs for easier typing during games */
+        .form-control-lg {
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 1.5rem;
+            border: 2px solid #dee2e6;
+        }
+
+        .form-control-lg:focus {
+            border-color: #0d6efd;
+            box-shadow: none;
+        }
+
+        .btn-open-card {
+            margin-top: 30px;
+            padding: 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controller-container">
+        <div class="control-card">
+            <h2 class="text-center mb-4 fw-black">ESCALA</h2>
+            
+            <div class="mb-4">
+                <label class="form-label">Seu nome</label>
+                <input type="text" id="inputTitle" class="form-control form-control-lg">
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Número secreto</label>
+                <input type="number" id="inputNumber" class="form-control form-control-lg" max="100" min="0">
+            </div>
+
+            <div class="d-grid">
+                <a href="card.html" target="_blank" class="btn btn-primary btn-open-card">
+                    Entrar no jogo
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inputTitle = document.getElementById('inputTitle');
+        const inputNumber = document.getElementById('inputNumber');
+
+        // Sync title
+        inputTitle.addEventListener('input', () => {
+            localStorage.setItem('gameTitle', inputTitle.value);
+        });
+
+        // Sync number
+        inputNumber.addEventListener('input', () => {
+            localStorage.setItem('gameNumber', inputNumber.value);
+        });
+    </script>
+</body>
+</html>

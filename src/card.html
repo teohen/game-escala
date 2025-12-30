@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Full Screen Game Card</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Force the body to take up the entire viewport with no scrolling */
+    body,
+    html {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background-color: #000;
+    }
+
+    .game-card-fullscreen {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      background: white;
+    }
+
+    /* Top Title: Dynamic sizing based on height */
+    #displayTitle {
+      height: 15vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #6f42c1;
+      color: white;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: clamp(1.5rem, 5vh, 3rem);
+      /* Responsive text size */
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    /* Center Number: Takes up the bulk of the screen */
+    .display-center {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, #ffffff 0%, #e9ecef 100%);
+    }
+
+    #displayNumber {
+      /* Clamp ensures the number is huge but doesn't break the screen */
+      font-size: clamp(100px, 40vh, 600px);
+      font-weight: 900;
+      color: #212529;
+      line-height: 1;
+    }
+
+    /* Bottom Buttons: Sized relative to screen height */
+    .display-footer {
+      height: 20vh;
+      padding: 20px;
+      display: flex;
+      gap: 15px;
+      background-color: #fff;
+      border-top: 2px solid #dee2e6;
+    }
+
+    .btn-game {
+      flex: 1;
+      font-size: clamp(1.2rem, 3vh, 2rem);
+      font-weight: bold;
+      text-transform: uppercase;
+      border-radius: 15px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">revelar o valor?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Tem certeza que deseja revelar o valor?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal"  id="showBtn">Revelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="game-card-fullscreen">
+    <div id="displayTitle">WAITING FOR DATA...</div>
+    <div id="displayHint">
+      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+        placeholder="Digite a sua dica aqui..."></textarea>
+    </div>
+
+    <div class="display-center">
+      <span id="displayNumber">0</span>
+    </div>
+
+    <div class="display-footer">
+      <button id="hideBtn" class="btn btn-success btn-game">Esconder</button>
+      <button id="revelarBtn" hidden class="btn btn-danger btn-game" data-bs-toggle="modal" data-bs-target="#exampleModal">Revelar</button>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+
+  <script>
+    const titleEl = document.getElementById('displayTitle')
+    const numberEl = document.getElementById('displayNumber');
+    const storedNumber = localStorage.getItem('gameNumber');
+    const hideBtn = document.getElementById("hideBtn");
+    const showBtn = document.getElementById("showBtn");
+    const revelarBtn = document.getElementById("revelarBtn");
+
+
+    const updateCard = () => {
+      const storedTitle = localStorage.getItem('gameTitle');
+
+
+      titleEl.innerText = storedTitle;
+      numberEl.innerText = storedNumber
+    };
+
+    // Listen for updates from index.html
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'gameTitle' || e.key === 'gameNumber') updateCard();
+    });
+
+    // Initial check
+    updateCard();
+
+    hideBtn.addEventListener('click', (e) => {
+      numberEl.innerText = '?';
+      hideBtn.hidden = true
+      revelarBtn.hidden = false
+    });
+
+    showBtn.addEventListener('click', (e) => {
+      numberEl.innerText = storedNumber;
+      hideBtn.hidden = false
+      revelarBtn.hidden = true
+      
+    });
+
+  </script>
+</body>
+
+</html>

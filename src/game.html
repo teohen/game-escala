@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Sequencer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body, html { height: 100%; margin: 0; background-color: #f0f2f5; }
+        .sequencer-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .main-display {
+            font-size: 5rem;
+            font-weight: 900;
+            color: #0d6efd;
+            margin-bottom: 20px;
+        }
+        .btn-xl {
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 20px;
+            text-transform: uppercase;
+            width: 100%;
+            max-width: 400px;
+        }
+        .status-text {
+            margin-top: 15px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sequencer-container">
+        <div class="status-text text-uppercase">Número sorteado</div>
+        <div id="localDisplay" class="main-display">--</div>
+
+        <button id="btnCreate" class="btn btn-dark btn-xl mb-3">Sortear números</button>
+        <button id="btnNext" class="btn btn-primary btn-xl mb-4" disabled>Mostrar próximo</button>
+    </div>
+
+    <script>
+        let numberSequence = [];
+        let currentIndex = -1;
+
+        const btnCreate = document.getElementById('btnCreate');
+        const btnNext = document.getElementById('btnNext');
+        const localDisplay = document.getElementById('localDisplay');
+        
+
+        // 1. Generate random sequence 0-100
+        btnCreate.addEventListener('click', () => {
+            // Create array [0, 1, ... 100]
+            numberSequence = Array.from({length: 101}, (_, i) => i);
+            
+            // Shuffle (Fisher-Yates algorithm)
+            for (let i = numberSequence.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [numberSequence[i], numberSequence[j]] = [numberSequence[j], numberSequence[i]];
+            }
+
+            currentIndex = -1;
+            btnNext.disabled = false;
+            localDisplay.innerText = "PRONTO";
+            
+            
+            // Update the title on the card
+            localStorage.setItem('gameTitle', 'Game Started!');
+            localStorage.setItem('gameNumber', '--');
+
+        });
+
+        // 2. Show next number
+        btnNext.addEventListener('click', () => {
+            currentIndex++;
+
+            if (currentIndex < numberSequence.length) {
+                const nextNum = numberSequence[currentIndex];
+                
+                // Update Local UI
+                localDisplay.innerText = nextNum;
+                
+
+                // Push to Card Display via LocalStorage
+                localStorage.setItem('gameNumber', nextNum);
+                localStorage.setItem('gameTitle', `Number #${currentIndex + 1}`);
+            } else {
+                localDisplay.innerText = "FINISH";
+                btnNext.disabled = true;
+                localStorage.setItem('gameTitle', 'GAME OVER');
+            }
+        });
+    </script>
+</body>
+</html>

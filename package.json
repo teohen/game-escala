@@ -1,0 +1,12 @@
+{
+  "name": "game-escala",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "bun build ./src/*.html --outdir ./dist"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
