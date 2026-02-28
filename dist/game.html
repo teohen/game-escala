@@ -45,6 +45,7 @@
 
         <button id="btnCreate" class="btn btn-dark btn-xl mb-3">Sortear números</button>
         <button id="btnNext" class="btn btn-primary btn-xl mb-4" disabled>Mostrar próximo</button>
+        <button id="btnHide" class="btn btn-secondary btn-xl mb-4">Hide/show</button>
     </div>
 
     <script>
@@ -53,7 +54,9 @@
 
         const btnCreate = document.getElementById('btnCreate');
         const btnNext = document.getElementById('btnNext');
+        const btnHide = document.getElementById('btnHide');
         const localDisplay = document.getElementById('localDisplay');
+
         
 
         // 1. Generate random sequence 0-100
@@ -76,6 +79,10 @@
             localStorage.setItem('gameTitle', 'Game Started!');
             localStorage.setItem('gameNumber', '--');
 
+        });
+
+        btnHide.addEventListener('click', () => {
+           localDisplay.hidden = !localDisplay.hidden
         });
 
         // 2. Show next number

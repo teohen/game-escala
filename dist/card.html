@@ -22,6 +22,8 @@
       display: flex;
       flex-direction: column;
       background: white;
+
+       overflow-y: auto;
     }
 
     /* Top Title: Dynamic sizing based on height */
@@ -51,10 +53,14 @@
 
     #displayNumber {
       /* Clamp ensures the number is huge but doesn't break the screen */
-      font-size: clamp(100px, 40vh, 600px);
+      font-size: clamp(100px, 20vh, 600px);
       font-weight: 900;
       color: #212529;
       line-height: 1;
+    }
+
+    textarea {
+      color: red;
     }
 
     /* Bottom Buttons: Sized relative to screen height */
