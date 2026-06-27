@@ -2,50 +2,183 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Game Sequencer</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body, html { height: 100%; margin: 0; background-color: #f0f2f5; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body, html {
+            height: 100%;
+            background: #f5f5f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
         .sequencer-container {
-            height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 20px;
+            justify-content: center;
+            padding: 40px 24px;
+            padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+            gap: 20px;
         }
+
+        .status-text {
+            color: #6c757d;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
         .main-display {
-            font-size: 5rem;
+            font-size: clamp(3rem, 20dvw, 6rem);
             font-weight: 900;
             color: #0d6efd;
-            margin-bottom: 20px;
+            line-height: 1;
+            text-align: center;
         }
-        .btn-xl {
-            padding: 20px 40px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            border-radius: 20px;
-            text-transform: uppercase;
+
+        .btn-game {
             width: 100%;
             max-width: 400px;
+            padding: 18px;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: opacity 0.15s;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .status-text {
-            margin-top: 15px;
+
+        .btn-game:active {
+            opacity: 0.85;
+        }
+
+        .btn-game:disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+
+        .btn-primary {
+            color: #fff;
+            background: #0d6efd;
+        }
+
+        .btn-dark {
+            color: #fff;
+            background: #212529;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 24px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 24px;
+            padding: 40px 32px 32px;
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .modal-label {
             color: #6c757d;
-            font-weight: 500;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .modal-number {
+            font-size: clamp(3rem, 15dvw, 5rem);
+            font-weight: 900;
+            color: #0d6efd;
+            line-height: 1;
+            margin-bottom: 32px;
+        }
+
+        .btn-close-modal {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            background: #e9ecef;
+            color: #212529;
+            transition: opacity 0.15s;
+            min-height: 50px;
+        }
+
+        .btn-close-modal:active {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 480px) {
+            .sequencer-container {
+                padding: 32px 20px;
+                padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+                gap: 16px;
+            }
+
+            .btn-game {
+                padding: 16px;
+                font-size: 1.1rem;
+                border-radius: 12px;
+                min-height: 50px;
+            }
+
+            .main-display {
+                font-size: clamp(2.5rem, 18dvw, 4rem);
+            }
+
+            .modal-content {
+                padding: 32px 24px 24px;
+                border-radius: 20px;
+            }
         }
     </style>
 <script type="module" crossorigin src="./game-z827ryqx.js"></script></head>
 <body>
 
     <div class="sequencer-container">
-        <div class="status-text text-uppercase">Número sorteado</div>
+        <div class="status-text">Número sorteado</div>
         <div id="localDisplay" class="main-display">--</div>
 
-        <button id="btnCreate" class="btn btn-dark btn-xl mb-3">Sortear números</button>
-        <button id="btnNext" class="btn btn-primary btn-xl mb-4" disabled>Mostrar próximo</button>
-        <button id="btnHide" class="btn btn-secondary btn-xl mb-4">Hide/show</button>
+        <button id="btnCreate" class="btn-game btn-dark">Sortear números</button>
+        <button id="btnNext" class="btn-game btn-primary" disabled>Mostrar próximo</button>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="modal-label">Número sorteado</div>
+            <div class="modal-number" id="modalNumber">--</div>
+            <button class="btn-close-modal" id="btnCloseModal">Fechar</button>
+        </div>
     </div>
 
     <script>
@@ -54,17 +187,14 @@
 
         const btnCreate = document.getElementById('btnCreate');
         const btnNext = document.getElementById('btnNext');
-        const btnHide = document.getElementById('btnHide');
         const localDisplay = document.getElementById('localDisplay');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalNumber = document.getElementById('modalNumber');
+        const btnCloseModal = document.getElementById('btnCloseModal');
 
-        
-
-        // 1. Generate random sequence 0-100
         btnCreate.addEventListener('click', () => {
-            // Create array [0, 1, ... 100]
             numberSequence = Array.from({length: 101}, (_, i) => i);
-            
-            // Shuffle (Fisher-Yates algorithm)
+
             for (let i = numberSequence.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [numberSequence[i], numberSequence[j]] = [numberSequence[j], numberSequence[i]];
@@ -73,31 +203,18 @@
             currentIndex = -1;
             btnNext.disabled = false;
             localDisplay.innerText = "PRONTO";
-            
-            
-            // Update the title on the card
+
             localStorage.setItem('gameTitle', 'Game Started!');
             localStorage.setItem('gameNumber', '--');
-
         });
 
-        btnHide.addEventListener('click', () => {
-           localDisplay.hidden = !localDisplay.hidden
-        });
-
-        // 2. Show next number
         btnNext.addEventListener('click', () => {
             currentIndex++;
-            alert('próximo')
 
             if (currentIndex < numberSequence.length) {
                 const nextNum = numberSequence[currentIndex];
-                
-                // Update Local UI
-                localDisplay.innerText = nextNum;
-                
-
-                // Push to Card Display via LocalStorage
+                modalNumber.innerText = nextNum;
+                modalOverlay.classList.add('active');
                 localStorage.setItem('gameNumber', nextNum);
                 localStorage.setItem('gameTitle', `Number #${currentIndex + 1}`);
             } else {
@@ -105,6 +222,16 @@
                 btnNext.disabled = true;
                 localStorage.setItem('gameTitle', 'GAME OVER');
             }
+        });
+
+        const closeModal = () => {
+            modalOverlay.classList.remove('active');
+        };
+
+        btnCloseModal.addEventListener('click', closeModal);
+
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
         });
     </script>
 </body>
